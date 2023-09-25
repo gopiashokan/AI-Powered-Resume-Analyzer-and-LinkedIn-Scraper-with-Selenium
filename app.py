@@ -366,15 +366,15 @@ elif option == 'Suggestion':
 
 elif option == 'Linkedin Jobs':
 
-    try:
+    if pdf is not None and openai_api_key is not None:
 
-        if pdf is not None and openai_api_key is not None:
+        try:
 
             # get user input of job title
             user_input_job_title = st.text_input(
-                label='Enter Job Titles (with comma separated):')
+                    label='Enter Job Titles (with comma separated):')
             submit = st.button('Submit')
-            
+                
             if submit and len(user_input_job_title)>0:
                 user_job_title = user_input_job_title.split(',')
 
@@ -387,19 +387,19 @@ elif option == 'Linkedin Jobs':
                     st.write(f"Location     : {df.iloc[i,2]}")
                     st.write(f"Website URL  : {df.iloc[i,3]}")
                     with st.expander(label='Job Desription'):
-                        st.write(df.iloc[i, 4])
+                            st.write(df.iloc[i, 4])
                     st.write('')
                     st.write('')
 
-        else:
+            else:
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.info('Please Enter the Job Titles')
+    
+        except:
             col1, col2 = st.columns(2)
             with col1:
-                st.info('Please Enter the Job Titles')
-    
-    except:
-        col1, col2 = st.columns(2)
-        with col1:
-            st.warning('OpenAI API Key is Invalid')
+                st.warning('OpenAI API Key is Invalid')
             
 
 elif option == 'Exit':
