@@ -13,8 +13,6 @@ from langchain.chains.question_answering import load_qa_chain
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service as ChromeService
-from webdriver_manager.chrome import ChromeDriverManager
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -244,9 +242,9 @@ class linkedin_scrap:
 
     def main(user_job_title):
         # chromedriver setup
-        option = Options()
-        option.add_argument("--start-maximized")
-        driver = webdriver.Chrome(service=Chromeservice(ChromeDriverManager().install()), options=option)
+        options = Options()
+        options.add_argument("--start-maximized")
+        driver = webdriver.Chrome(options=options)
 
         linkedin_scrap.linkedin_open_scrolldown(driver, user_job_title)
 
@@ -370,7 +368,7 @@ elif option == 'Linkedin Jobs':
 
     if pdf is not None and openai_api_key is not None:
 
-        
+        try:
 
             # get user input of job title
             user_input_job_title = st.text_input(
@@ -398,6 +396,10 @@ elif option == 'Linkedin Jobs':
                 with col1:
                     st.info('Please Enter the Job Titles')
     
+        except:
+            col1, col2 = st.columns(2)
+            with col1:
+                st.warning('OpenAI API Key is Invalid')
             
 
 elif option == 'Exit':
