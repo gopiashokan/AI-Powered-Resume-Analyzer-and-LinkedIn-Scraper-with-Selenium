@@ -242,9 +242,9 @@ class linkedin_scrap:
 
     def main(user_job_title):
         # chromedriver setup
-        options = Options()
-        options.add_argument("--start-maximized")
-        driver = webdriver.Chrome(options=options)
+        option = Options()
+        option.add_argument("--start-maximized")
+        driver = webdriver.Chrome(service=Chromeservice(ChromeDriverManager().install()), options=option)
 
         linkedin_scrap.linkedin_open_scrolldown(driver, user_job_title)
 
