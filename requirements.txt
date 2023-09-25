@@ -9,3 +9,4 @@ openai
 tiktoken
 faiss-cpu
 selenium
+chromedriver-autoinstaller
