@@ -368,7 +368,7 @@ elif option == 'Linkedin Jobs':
 
     if pdf is not None and openai_api_key is not None:
 
-        try:
+        
 
             # get user input of job title
             user_input_job_title = st.text_input(
@@ -396,10 +396,6 @@ elif option == 'Linkedin Jobs':
                 with col1:
                     st.info('Please Enter the Job Titles')
     
-        except:
-            col1, col2 = st.columns(2)
-            with col1:
-                st.warning('OpenAI API Key is Invalid')
             
 
 elif option == 'Exit':
