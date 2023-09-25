@@ -2,7 +2,7 @@ numpy
 pandas
 streamlit
 streamlit_option_menu
-streamlit_extras.add_vertical_space
+streamlit_extras
 PyPDF2
 langchain
 selenium
