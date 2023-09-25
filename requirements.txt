@@ -10,3 +10,4 @@ tiktoken
 faiss-cpu
 selenium
 chromedriver-autoinstaller
+webdriver-manager
