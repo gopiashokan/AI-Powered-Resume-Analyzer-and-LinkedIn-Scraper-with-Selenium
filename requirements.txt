@@ -6,4 +6,5 @@ streamlit_extras
 PyPDF2
 langchain
 openai
+tiktoken
 selenium
