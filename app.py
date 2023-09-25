@@ -274,7 +274,7 @@ with st.sidebar:
 
 if option == 'Summary':
 
-    try:
+    
         if pdf is not None and openai_api_key is not None:
             pdf_chunks = pdf_to_chunks(pdf)
 
@@ -284,10 +284,6 @@ if option == 'Summary':
             st.subheader('Summary:')
             st.write(result_summary)
 
-    except:
-        col1, col2 = st.columns(2)
-        with col1:
-            st.warning('OpenAI API Key is Invalid')
 
 
 elif option == 'Strength':
