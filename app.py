@@ -244,7 +244,7 @@ class linkedin_scrap:
         # chromedriver setup
         options = Options()
         options.add_argument("--start-maximized")
-        driver = webdriver.Chrome('https://github.com/gopiashokan/Resume-Analyzer-Artificial-Intelligence/blob/main/chromedriver.exe', options=options)
+        driver = webdriver.Chrome('https://github.com/gopiashokan/Resume-Analyzer-Artificial-Intelligence/blob/main/chromedriver.exe', options)
 
         linkedin_scrap.linkedin_open_scrolldown(driver, user_job_title)
 
