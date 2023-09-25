@@ -1,0 +1,8 @@
+numpy
+pandas
+streamlit
+streamlit_option_menu
+streamlit_extras.add_vertical_space
+PyPDF2
+langchain
+selenium
