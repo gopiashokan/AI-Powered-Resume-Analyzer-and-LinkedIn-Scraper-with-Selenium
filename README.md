@@ -59,7 +59,7 @@ To use this project, follow these steps:
 
 **Easy User Experience:**
 - Resume Analyzer AI makes it easy for users. You can upload your resume and enter your OpenAI API key without any hassle. The application is designed to be user-friendly so that anyone can use its powerful resume analysis features.
-- It also uses the PyPDF2 library to quickly extract text from your uploaded resumes, which is the first step in doing a thorough analysis.
+- It also uses the PyPDF2 library to quickly extract text from your uploaded resume, which is the first step in doing a thorough analysis.
 
 **Smart Text Analysis with Langchain:**
 - What makes it special is how it analyzes text. It uses a smart method called the Langchain library to break long sections of text from resumes into smaller, meaningful pieces.
