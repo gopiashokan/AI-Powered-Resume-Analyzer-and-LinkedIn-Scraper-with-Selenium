@@ -62,7 +62,7 @@ To use this project, follow these steps:
 - It also uses the PyPDF2 library to quickly extract text from your uploaded resume, which is the first step in doing a thorough analysis.
 
 **Smart Text Analysis with Langchain:**
-- What makes it special is how it analyzes text. It uses a smart method called the Langchain library to break long sections of text from resumes into smaller, meaningful pieces.
+- What makes it special is how it analyzes text. It uses a smart method called the Langchain library to break long sections of text from resumes into smaller chunks, making them more meaningful.
 - This clever technique improves the accuracy of the resume analysis, and it gives users practical advice on how to enhance their job prospects.
 
 **Enhanced OpenAI Integration with FAISS:**
@@ -78,8 +78,8 @@ To use this project, follow these steps:
 - The QA chain efficiently handles lists of input documents (docs) and a list of questions (chunks), with the response variable capturing the results, such as answers to the questions derived from the content within the input documents.
 
 **Comprehensive Resume Analysis:**
-- **Summary:** Resume Analyzer AI offers a quick, comprehensive resume overview, highlighting key qualifications, experiences, and achievements. Users grasp profiles swiftly, streamlining reviews for efficiency and insight.
-- **Strength:** Effortlessly conducting a comprehensive resume review, it analyzes qualifications, experience, skills, projects, and achievements. It subsequently highlights strengths, providing job seekers with a competitive edge.
+- **Summary:** Resume Analyzer AI provides a quick, comprehensive overview of resumes, emphasizing qualifications, key experience, skills, projects, and achievements. Users can swiftly grasp profiles, enhancing review efficiency and insight.
+- **Strength:** Effortlessly conducting a comprehensive resume review, it analyzes qualifications, experience, and accomplishments. It subsequently highlights strengths, providing job seekers with a competitive edge.
 - **Weakness:** AI conducts thorough analysis to pinpoint weaknesses and offers tailored solutions for transforming them into strengths, empowering job seekers.
 - **Suggestion:** AI provides personalized job title recommendations that align closely with the user's qualifications and resume content, facilitating an optimized job search experience.
 
