@@ -31,6 +31,8 @@ Resume Analyzer AI" leverages the power of LLM and OpenAI as an advanced Streaml
 
 To run this project, you need to install the following packages:
 
+Chrome Webdriver: [https://googlechromelabs.github.io/chrome-for-testing/#stable](https://googlechromelabs.github.io/chrome-for-testing/#stable)
+
 ```python
 pip install numpy
 pip install pandas
