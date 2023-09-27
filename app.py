@@ -367,7 +367,7 @@ elif option == 'Suggestion':
 elif option == 'Linkedin Jobs':
 
     if pdf is not None and openai_api_key is not None:
-
+        try:
             # get user input of job title
             user_input_job_title = st.text_input(
                     label='Enter Job Titles (with comma separated):')
@@ -393,7 +393,16 @@ elif option == 'Linkedin Jobs':
                 col1, col2 = st.columns(2)
                 with col1:
                     st.info('Please Enter the Job Titles')
-           
+        
+        except:
+            st.write('')
+            st.info("This feature is currently not working in the deployed Streamlit application \
+                    due to a 'selenium.common.exceptions.WebDriverException' error.")
+            st.srite('')
+
+            st.write("Please use the local Streamlit application for a smooth experience:")
+            st.write("[Local Streamlit Application](http://localhost:8501)")
+     
 
 elif option == 'Exit':
 
