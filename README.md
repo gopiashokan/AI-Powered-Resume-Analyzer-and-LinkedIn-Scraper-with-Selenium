@@ -1,4 +1,4 @@
-# Airbnb Analysis
+# Resume Analyzer Artificial Intelligence
 
 **Introduction**
 
