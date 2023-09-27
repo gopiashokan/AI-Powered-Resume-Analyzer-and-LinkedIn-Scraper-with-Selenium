@@ -397,7 +397,7 @@ elif option == 'Linkedin Jobs':
     except:
         st.write('')
         st.info("This feature is currently not working in the deployed Streamlit application due to a 'selenium.common.exceptions.WebDriverException' error.")
-        st.srite('')
+        st.write('')
 
         st.write("Please use the local Streamlit application for a smooth experience:")
         st.write("[Local Streamlit Application](http://localhost:8501)")
