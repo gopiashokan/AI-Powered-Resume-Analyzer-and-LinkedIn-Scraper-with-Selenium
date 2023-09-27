@@ -92,6 +92,7 @@ To use this project, follow these steps:
 - This streamlined process enables users to easily review scraped job details and apply for positions, simplifying their job search and application experience.
 - **Important Note:** Please be aware that this feature is currently available for use in the local version of this Streamlit application. Due to certain limitations, this feature may not function as intended in the deployed, online version. We recommend using this feature in the local environment for optimal results.
 
+**Project Demo Video:** [https://youtu.be/7vCccPVokys?si=QCgXY51ZacVIKhgU](https://youtu.be/7vCccPVokys?si=QCgXY51ZacVIKhgU)
 
 **Contributing**
 
@@ -111,4 +112,3 @@ This project is licensed under the MIT License. Please review the LICENSE file f
 
 For any further questions or inquiries, feel free to reach out. We are happy to assist you with any queries.
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/7vCccPVokys?si=U3Yd_Ysx6iKvKQec" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
