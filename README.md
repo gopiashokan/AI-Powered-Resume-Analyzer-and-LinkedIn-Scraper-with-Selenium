@@ -92,7 +92,7 @@ To use this project, follow these steps:
 - This streamlined process enables users to easily review scraped job details and apply for positions, simplifying their job search and application experience.
 - **Important Note:** Please be aware that this feature is currently available for use in the local version of this Streamlit application. Due to certain limitations, this feature may not function as intended in the deployed, online version. We recommend using this feature in the local environment for optimal results.
 
-**Project Demo Video:** [https://youtu.be/7vCccPVokys?si=QCgXY51ZacVIKhgU](https://youtu.be/7vCccPVokys?si=QCgXY51ZacVIKhgU)
+**Project Demo Video:** [https://youtu.be/wFouWeK7NPg](https://youtu.be/wFouWeK7NPg)
 
 **Contributing**
 
