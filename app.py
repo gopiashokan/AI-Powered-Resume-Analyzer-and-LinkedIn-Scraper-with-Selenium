@@ -44,12 +44,12 @@ def pdf_to_chunks(pdf):
     # read pdf and it returns memory address
     pdf_reader = PdfReader(pdf)
 
-    # extrat text from one by one page
+    # extrat text from each page separately
     text = ""
     for page in pdf_reader.pages:
         text += page.extract_text()
 
-    # Set a really small chunk size, just to show.
+    # Split the long text into small chunks.
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=700,
         chunk_overlap=200,
@@ -60,55 +60,55 @@ def pdf_to_chunks(pdf):
 
 
 def resume_summary(query_with_chunks):
-    chunks = f''' need to detailed summarization of below resume and finally conclude them
+    query = f''' need to detailed summarization of below resume and finally conclude them
 
                 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
                 {query_with_chunks}
                 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
                 '''
-    return chunks
+    return query
 
 
 def resume_strength(query_with_chunks):
-    chunks = f'''need to detailed analysis and explain of the strength of below resume and finally conclude them
+    query = f'''need to detailed analysis and explain of the strength of below resume and finally conclude them
                 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
                 {query_with_chunks}
                 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
                 '''
-    return chunks
+    return query
 
 
 def resume_weakness(query_with_chunks):
-    chunks = f'''need to detailed analysis and explain of the weakness of below resume details and how to improve make a better resume
+    query = f'''need to detailed analysis and explain of the weakness of below resume details and how to improve make a better resume
 
                 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
                 {query_with_chunks}
                 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
                 '''
-    return chunks
+    return query
 
 
 def job_title_suggestion(query_with_chunks):
 
-    chunks = f''' what are the job roles i apply to likedin based on below?
+    query = f''' what are the job roles i apply to likedin based on below?
                   
                   """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
                   {query_with_chunks}
                   """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
                 '''
-    return chunks
+    return query
 
 
-def openai(openai_api_key, chunks):
+def openai(openai_api_key, query):
 
     embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
-    vectorstores = FAISS.from_texts(chunks, embedding=embeddings)
+    vectorstores = FAISS.from_texts(query, embedding=embeddings)
 
-    docs = vectorstores.similarity_search(query=chunks, k=3)
+    docs = vectorstores.similarity_search(query=query, k=3)
 
     llm = OpenAI(model_name='gpt-3.5-turbo', openai_api_key=openai_api_key)
     chain = load_qa_chain(llm=llm, chain_type='stuff')
-    response = chain.run(input_documents=docs, question=chunks)
+    response = chain.run(input_documents=docs, question=query)
     return response
 
 
@@ -249,16 +249,12 @@ class linkedin_scrap:
         linkedin_scrap.linkedin_open_scrolldown(driver, user_job_title)
 
         final_df = linkedin_scrap.data_scrap(driver, user_job_title)
+        driver.quit()
         return final_df
 
 
 streamlit_config()
 st.write('')
-
-
-# file upload
-pdf = st.file_uploader(label='', type='pdf')
-openai_api_key = st.text_input(label='OpenAI API Key', type='password')
 
 
 # sidebar
@@ -270,15 +266,18 @@ with st.sidebar:
                          icons=['house-fill', 'database-fill', 'pass-fill', 'list-ul', 'linkedin', 'sign-turn-right-fill'])
 
 
-
 if option == 'Summary':
+
+    # file upload
+    pdf = st.file_uploader(label='', type='pdf')
+    openai_api_key = st.text_input(label='OpenAI API Key', type='password')
 
     try:
         if pdf is not None and openai_api_key is not None:
             pdf_chunks = pdf_to_chunks(pdf)
 
             summary = resume_summary(query_with_chunks=pdf_chunks)
-            result_summary = openai(openai_api_key=openai_api_key, chunks=summary)
+            result_summary = openai(openai_api_key=openai_api_key, query=summary)
 
             st.subheader('Summary:')
             st.write(result_summary)
@@ -291,6 +290,10 @@ if option == 'Summary':
 
 elif option == 'Strength':
 
+    # file upload
+    pdf = st.file_uploader(label='', type='pdf')
+    openai_api_key = st.text_input(label='OpenAI API Key', type='password')
+
     try:
         if pdf is not None and openai_api_key is not None:
 
@@ -298,12 +301,10 @@ elif option == 'Strength':
 
             # Resume summary
             summary = resume_summary(query_with_chunks=pdf_chunks)
-            result_summary = openai(
-                openai_api_key=openai_api_key, chunks=summary)
+            result_summary = openai(openai_api_key=openai_api_key, query=summary)
 
             strength = resume_strength(query_with_chunks=result_summary)
-            result_strength = openai(
-                openai_api_key=openai_api_key, chunks=strength)
+            result_strength = openai(openai_api_key=openai_api_key, query=strength)
 
             st.subheader('Strength:')
             st.write(result_strength)
@@ -316,6 +317,10 @@ elif option == 'Strength':
 
 elif option == 'Weakness':
 
+    # file upload
+    pdf = st.file_uploader(label='', type='pdf')
+    openai_api_key = st.text_input(label='OpenAI API Key', type='password')
+
     try:
         if pdf is not None and openai_api_key is not None:
 
@@ -323,12 +328,10 @@ elif option == 'Weakness':
 
             # Resume summary
             summary = resume_summary(query_with_chunks=pdf_chunks)
-            result_summary = openai(
-                openai_api_key=openai_api_key, chunks=summary)
+            result_summary = openai(openai_api_key=openai_api_key, query=summary)
 
             weakness = resume_weakness(query_with_chunks=result_summary)
-            result_weakness = openai(
-                openai_api_key=openai_api_key, chunks=weakness)
+            result_weakness = openai(openai_api_key=openai_api_key, query=weakness)
 
             st.subheader('Weakness:')
             st.write(result_weakness)
@@ -341,19 +344,20 @@ elif option == 'Weakness':
 
 elif option == 'Suggestion':
 
+    # file upload
+    pdf = st.file_uploader(label='', type='pdf')
+    openai_api_key = st.text_input(label='OpenAI API Key', type='password')
+
     try:
         if pdf is not None and openai_api_key is not None:
             pdf_chunks = pdf_to_chunks(pdf)
 
             # Resume summary
             summary = resume_summary(query_with_chunks=pdf_chunks)
-            result_summary = openai(
-                openai_api_key=openai_api_key, chunks=summary)
+            result_summary = openai(openai_api_key=openai_api_key, query=summary)
 
-            job_suggestion = job_title_suggestion(
-                query_with_chunks=result_summary)
-            result_suggestion = openai(
-                openai_api_key=openai_api_key, chunks=job_suggestion)
+            job_suggestion = job_title_suggestion(query_with_chunks=result_summary)
+            result_suggestion = openai(openai_api_key=openai_api_key, query=job_suggestion)
 
             st.subheader('Suggestion: ')
             st.write(result_suggestion)
@@ -367,43 +371,48 @@ elif option == 'Suggestion':
 elif option == 'Linkedin Jobs':
 
     try:
-        if pdf is not None and openai_api_key is not None:
-            # get user input of job title
-            user_input_job_title = st.text_input(
-                    label='Enter Job Titles (with comma separated):')
-            submit = st.button('Submit')
-                
-            if submit and len(user_input_job_title)>0:
-                user_job_title = user_input_job_title.split(',')
-
-                df = linkedin_scrap.main(user_job_title)
-
-                l = len(df['Company Name'])
-                for i in range(0, l):
-                    st.write(f"Company Name : {df.iloc[i,0]}")
-                    st.write(f"Job Title    : {df.iloc[i,1]}")
-                    st.write(f"Location     : {df.iloc[i,2]}")
-                    st.write(f"Website URL  : {df.iloc[i,3]}")
-                    with st.expander(label='Job Desription'):
-                            st.write(df.iloc[i, 4])
-                    st.write('')
-                    st.write('')
-
-            else:
-                col1, col2 = st.columns(2)
-                with col1:
-                    st.info('Please Enter the Job Titles')
+        st.info("Please ensure that 'chromedriver.exe' is installed and actively running on your system.\
+                 If not, you can watch the project demo video for guidance: [Resume Analyzer AI - Project Demo\
+                 Video](https://youtu.be/7vCccPVokys?si=QCgXY51ZacVIKhgU)")
         
+        # get user input of job title
+        user_input_job_title = st.text_input(label='Enter Job Titles (with comma separated):')
+        submit = st.button('Submit')
+
+        if submit and len(user_input_job_title) > 0:
+
+            user_job_title = user_input_job_title.split(',')
+
+            df = linkedin_scrap.main(user_job_title)
+
+            l = len(df['Company Name'])
+            for i in range(0, l):
+                st.write(f"Company Name : {df.iloc[i,0]}")
+                st.write(f"Job Title    : {df.iloc[i,1]}")
+                st.write(f"Location     : {df.iloc[i,2]}")
+                st.write(f"Website URL  : {df.iloc[i,3]}")
+                with st.expander(label='Job Desription'):
+                    st.write(df.iloc[i, 4])
+                st.write('')
+                st.write('')
+
+        elif submit and len(user_input_job_title) == 0:
+            col1, col2 = st.columns(2)
+            with col1:
+                st.info('Please Enter the Job Titles')
+
     except:
         st.write('')
         st.info("This feature is currently not working in the deployed Streamlit application due to a 'selenium.common.exceptions.WebDriverException' error.")
         st.write('')
 
-        st.write("Please use the local Streamlit application for a smooth experience: [http://localhost:8501](http://localhost:8501)")
+        st.write(
+            "Please use the local Streamlit application for a smooth experience: [http://localhost:8501](http://localhost:8501)")
 
 
 elif option == 'Exit':
 
+    add_vertical_space(3)
     st.success('Thank you for your time. Exiting the application')
     st.balloons()
 
