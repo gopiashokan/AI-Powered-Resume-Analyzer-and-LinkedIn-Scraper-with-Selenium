@@ -1,4 +1,4 @@
-# Resume Analyzer Artificial Intelligence
+# AI-Powered Resume Analyzer and LinkedIn Scraper with Selenium
 
 **Introduction**
 
