@@ -69,11 +69,11 @@ To use this project, follow these steps:
 
 **Enhanced OpenAI Integration with FAISS:**
 - Seamlessly connecting to OpenAI services, the application establishes a secure connection using your OpenAI API key. This integration forms the basis for robust interactions, facilitating advanced analysis and efficient information retrieval.
-- It uses the FAISS library to convert both the text chunks and query text data into numerical vectors, simplifying the analysis process and enabling the retrieval of pertinent information.
+- It uses the FAISS(Facebook AI Similarity Search) library to convert both the text chunks and query text data into numerical vectors, simplifying the analysis process and enabling the retrieval of pertinent information.
 
 **Intelligent Chunk Selection and LLM:**
 - Utilizing similarity search, Resume Analyzer AI compares the query and chunks, enabling the selection of the top 'K' most similar chunks based on their similarity scores.
-- Simultaneously, the application creates an OpenAI object, particularly an LLM (Language Model), using the ChatGPT 3.5 Turbo model and your OpenAI API key.
+- Simultaneously, the application creates an OpenAI object, particularly an LLM (Large Language Model), using the ChatGPT 3.5 Turbo model and your OpenAI API key.
 
 **Robust Question-Answering Pipeline:**
 - This integration establishes a robust question-answering (QA) pipeline, making use of the load_qa_chain function, which encompasses multiple components, including the language model.
