@@ -372,8 +372,8 @@ elif option == 'Linkedin Jobs':
 
     try:
         st.info("Please ensure that 'chromedriver.exe' is installed and actively running on your system.\
-                 If not, you can watch the project demo video for guidance: [Resume Analyzer AI - Project Demo\
-                 Video](https://youtu.be/7vCccPVokys?si=QCgXY51ZacVIKhgU)")
+                 If not, you can watch the project demo video for guidance: [AI-Powered Resume Analyzer and\
+                 LinkedIn Scraper with Selenium - Project Demo Video](https://youtu.be/wFouWeK7NPg)")
         
         # get user input of job title
         user_input_job_title = st.text_input(label='Enter Job Titles (with comma separated):')
