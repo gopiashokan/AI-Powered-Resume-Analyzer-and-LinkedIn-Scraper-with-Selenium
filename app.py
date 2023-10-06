@@ -36,7 +36,7 @@ def streamlit_config():
     st.markdown(page_background_color, unsafe_allow_html=True)
 
     # title and position
-    st.markdown(f'<h1 style="text-align: center;">Resume Analyzer AI</h1>',
+    st.markdown(f'<h1 style="text-align: center;">AI-Powered Resume Analyzer and <br> LinkedIn Scraper with Selenium</h1>',
                 unsafe_allow_html=True)
 
 
