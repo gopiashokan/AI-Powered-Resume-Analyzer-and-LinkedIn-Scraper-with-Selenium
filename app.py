@@ -262,7 +262,7 @@ with st.sidebar:
 
     add_vertical_space(3)
 
-    option = option_menu(menu_title='', options=['Summary', 'Strength', 'Weakness', 'Suggestion', 'Linkedin Jobs', 'Exit'],
+    option = option_menu(menu_title='', options=['Summary', 'Strength', 'Weakness', 'Job Titles', 'Linkedin Jobs', 'Exit'],
                          icons=['house-fill', 'database-fill', 'pass-fill', 'list-ul', 'linkedin', 'sign-turn-right-fill'])
 
 
@@ -342,7 +342,7 @@ elif option == 'Weakness':
             st.warning('OpenAI API Key is Invalid')
 
 
-elif option == 'Suggestion':
+elif option == 'Job Titles':
 
     # file upload
     pdf = st.file_uploader(label='', type='pdf')
