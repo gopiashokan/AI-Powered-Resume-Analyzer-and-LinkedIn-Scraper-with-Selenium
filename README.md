@@ -85,7 +85,7 @@ To use this project, follow these steps:
 - **Weakness:** AI conducts thorough analysis to pinpoint weaknesses and offers tailored solutions for transforming them into strengths, empowering job seekers.
 - **Suggestion:** AI provides personalized job title recommendations that align closely with the user's qualifications and resume content, facilitating an optimized job search experience.
 
-**Streamlit application:** [https://gopiashokan-resume-ai.streamlit.app/](https://gopiashokan-resume-ai.streamlit.app/)
+**Streamlit application:** [https://gopiashokan-resume-ai-selenium.streamlit.app/](https://gopiashokan-resume-ai-selenium.streamlit.app/)
 
 **Selenium-Powered LinkedIn Data Scraping:**
 - Utilizing Selenium and a Webdriver automated test tool, this feature enables users to input job titles, automating the data scraping process from LinkedIn. The scraped data includes crucial details such as company names, job titles, locations, URLs, and comprehensive job descriptions.
