@@ -8,10 +8,9 @@ from PyPDF2 import PdfReader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import FAISS
-from langchain.llms import OpenAI
+from langchain.chat_models import ChatOpenAI
 from langchain.chains.question_answering import load_qa_chain
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 import warnings
 warnings.filterwarnings('ignore')
@@ -40,76 +39,86 @@ def streamlit_config():
                 unsafe_allow_html=True)
 
 
-def pdf_to_chunks(pdf):
-    # read pdf and it returns memory address
-    pdf_reader = PdfReader(pdf)
+class resume_analyzer:
 
-    # extrat text from each page separately
-    text = ""
-    for page in pdf_reader.pages:
-        text += page.extract_text()
+    def pdf_to_chunks(pdf):
+        # read pdf and it returns memory address
+        pdf_reader = PdfReader(pdf)
 
-    # Split the long text into small chunks.
-    text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=700,
-        chunk_overlap=200,
-        length_function=len)
+        # extrat text from each page separately
+        text = ""
+        for page in pdf_reader.pages:
+            text += page.extract_text()
 
-    chunks = text_splitter.split_text(text=text)
-    return chunks
+        # Split the long text into small chunks.
+        text_splitter = RecursiveCharacterTextSplitter(
+            chunk_size=700,
+            chunk_overlap=200,
+            length_function=len)
 
-
-def resume_summary(query_with_chunks):
-    query = f''' need to detailed summarization of below resume and finally conclude them
-
-                """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-                {query_with_chunks}
-                """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-                '''
-    return query
+        chunks = text_splitter.split_text(text=text)
+        return chunks
 
 
-def resume_strength(query_with_chunks):
-    query = f'''need to detailed analysis and explain of the strength of below resume and finally conclude them
-                """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-                {query_with_chunks}
-                """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-                '''
-    return query
+    def resume_summary(query_with_chunks):
+        query = f''' need to detailed summarization of below resume and finally conclude them
+
+                    """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+                    {query_with_chunks}
+                    """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+                    '''
+        return query
 
 
-def resume_weakness(query_with_chunks):
-    query = f'''need to detailed analysis and explain of the weakness of below resume details and how to improve make a better resume
-
-                """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-                {query_with_chunks}
-                """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-                '''
-    return query
-
-
-def job_title_suggestion(query_with_chunks):
-
-    query = f''' what are the job roles i apply to likedin based on below?
-                  
-                  """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-                  {query_with_chunks}
-                  """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-                '''
-    return query
+    def resume_strength(query_with_chunks):
+        query = f'''need to detailed analysis and explain of the strength of below resume and finally conclude them
+                    """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+                    {query_with_chunks}
+                    """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+                    '''
+        return query
 
 
-def openai(openai_api_key, query):
+    def resume_weakness(query_with_chunks):
+        query = f'''need to detailed analysis and explain of the weakness of below resume and how to improve make a better resume.
 
-    embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
-    vectorstores = FAISS.from_texts(query, embedding=embeddings)
+                    """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+                    {query_with_chunks}
+                    """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+                    '''
+        return query
 
-    docs = vectorstores.similarity_search(query=query, k=3)
 
-    llm = OpenAI(model_name='gpt-3.5-turbo', openai_api_key=openai_api_key)
-    chain = load_qa_chain(llm=llm, chain_type='stuff')
-    response = chain.run(input_documents=docs, question=query)
-    return response
+    def job_title_suggestion(query_with_chunks):
+
+        query = f''' what are the job roles i apply to likedin based on below?
+                    
+                    """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+                    {query_with_chunks}
+                    """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+                    '''
+        return query
+
+
+    def openai(openai_api_key, chunks, analyze):
+
+        # Using OpenAI service for embedding
+        embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
+
+        # Facebook AI Similarity Serach library help us to convert text data to numerical vector
+        vectorstores = FAISS.from_texts(chunks, embedding=embeddings)
+
+        # compares the query and chunks, enabling the selection of the top 'K' most similar chunks based on their similarity scores.
+        docs = vectorstores.similarity_search(query=analyze, k=3)
+
+        # creates an OpenAI object, using the ChatGPT 3.5 Turbo model
+        llm = ChatOpenAI(model='gpt-3.5-turbo', api_key=openai_api_key)
+
+        # question-answering (QA) pipeline, making use of the load_qa_chain function
+        chain = load_qa_chain(llm=llm, chain_type='stuff')
+
+        response = chain.run(input_documents=docs, question=analyze)
+        return response
 
 
 class linkedin_scrap:
@@ -128,20 +137,65 @@ class linkedin_scrap:
         driver.get(link)
         driver.implicitly_wait(10)
 
-        c = 0
-        while c < 5:
-            driver.execute_script(
-                "window.scrollTo(0, document.body.scrollHeight);")
+        for i in range(0,3):
+            driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
             time.sleep(5)
-            c += 1
             try:
-                x = driver.find_element(
-                    by=By.XPATH, value="//button[@aria-label='See more jobs']")
-                driver.execute_script('arguments[0].click();', x)
+                x = driver.find_element(by=By.CSS_SELECTOR, value="button[aria-label='See more jobs']").click()
                 time.sleep(3)
             except:
                 pass
-                time.sleep(4)
+
+
+    def company_name(driver):
+
+        company = driver.find_elements(by=By.CSS_SELECTOR, value='h4[class="base-search-card__subtitle"]')
+
+        company_name = []
+
+        for i in company:
+            company_name.append(i.text)
+
+        return company_name
+
+
+    def company_location(driver):
+        
+        location = driver.find_elements(by=By.CSS_SELECTOR, value='span[class="job-search-card__location"]')
+
+        company_location = []
+
+        for i in location:
+            company_location.append(i.text)
+        
+        return company_location
+    
+
+    def job_title(driver):
+                
+        title = driver.find_elements(by=By.CSS_SELECTOR, value='h3[class="base-search-card__title"]')
+
+        job_title = []
+        
+        for i in title:
+            job_title.append(i.text)
+        
+        return job_title
+
+
+    def job_url(driver):
+
+        url = driver.find_elements(by=By.XPATH, value='//a[contains(@href, "/jobs/")]')
+        
+        url_list = [i.get_attribute('href') for i in url]
+        
+        job_url = []
+        
+        for url in url_list:
+                job_url.append(url)
+        
+        return job_url
+
 
     def job_title_filter(x, user_job_title):
 
@@ -156,105 +210,73 @@ class linkedin_scrap:
         intersection = list(set(suggestion).intersection(set(a)))
         return x if len(intersection) > 1 else np.nan
 
-    def get_description(driver, link):
-        driver.get(link)
-        driver.find_element(
-            by=By.CLASS_NAME, value='show-more-less-html__button').click()
-        description = driver.find_elements(
-            by=By.CLASS_NAME, value='show-more-less-html')
-        driver.implicitly_wait(4)
 
+    def get_description(driver, link):
+
+        driver.get(link)
+        time.sleep(3)
+
+        driver.find_element(by=By.CSS_SELECTOR, 
+                            value='button[data-tracking-control-name="public_jobs_show-more-html-btn"]').click()
+        time.sleep(2)
+
+        description = driver.find_elements(by=By.CSS_SELECTOR, 
+                                           value='div[class="show-more-less-html__markup relative overflow-hidden"]')
+        driver.implicitly_wait(4)
+        
         for j in description:
-            text = j.text.replace('Show less', '')
-            return text.strip()
+            return j.text
+
 
     def data_scrap(driver, user_job_title):
 
-        company_name = []
-        try:
-            company = driver.find_elements(
-                by=By.CLASS_NAME, value='base-search-card__subtitle')
-            for i in company:
-                company_name.append(i.text)
-        except:
-            pass
-
-        job_title = []
-        try:
-            title = driver.find_elements(
-                by=By.CLASS_NAME, value='base-search-card__title')
-            for i in title:
-                job_title.append(i.text)
-        except:
-            pass
-
-        company_location = []
-        try:
-            location = driver.find_elements(
-                by=By.CLASS_NAME, value='job-search-card__location')
-            for i in location:
-                company_location.append(i.text)
-        except:
-            pass
-
-        job_url = []
-        try:
-            url = driver.find_elements(
-                by=By.XPATH, value="//a[contains(@href, '/jobs/')]")
-            url_list = [i.get_attribute('href') for i in url]
-            for url in url_list:
-                job_url.append(url)
-        except:
-            pass
-
         # combine the all data to single dataframe
-        df = pd.DataFrame(company_name, columns=['Company Name'])
-        df['Job Title'] = pd.DataFrame(job_title)
-        df['Location'] = pd.DataFrame(company_location)
-        df['Website URL'] = pd.DataFrame(job_url)
+        df = pd.DataFrame(linkedin_scrap.company_name(driver), columns=['Company Name'])
+        df['Job Title'] = pd.DataFrame(linkedin_scrap.job_title(driver))
+        df['Location'] = pd.DataFrame(linkedin_scrap.company_location(driver))
+        df['Website URL'] = pd.DataFrame(linkedin_scrap.job_url(driver))
 
-        # job title filter based on chatgpt suggestion
-        df['Job Title'] = df['Job Title'].apply(
-            lambda x: linkedin_scrap.job_title_filter(x, user_job_title))
+        # job title filter based on user input
+        df['Job Title'] = df['Job Title'].apply(lambda x: linkedin_scrap.job_title_filter(x, user_job_title))
         df = df.dropna()
         df.reset_index(drop=True, inplace=True)
-        df = df.iloc[:30, :]
+        df = df.iloc[:10, :]
 
-        # list of url after filter df
+        # make a list after filter
         website_url = df['Website URL'].tolist()
 
         # add job description in df
         job_description = []
+
         for i in range(0, len(website_url)):
             link = website_url[i]
-            time.sleep(5)
             data = linkedin_scrap.get_description(driver, link)
             if data is not None and len(data.strip()) > 0:
                 job_description.append(data)
             else:
                 job_description.append('Description Not Available')
 
-        df['Job Description'] = pd.DataFrame(
-            job_description, columns=['Description'])
+        df['Job Description'] = pd.DataFrame(job_description, columns=['Description'])
         df = df.dropna()
         df.reset_index(drop=True, inplace=True)
         return df
 
+
     def main(user_job_title):
-        # chromedriver setup
-        options = Options()
-        options.add_argument("--start-maximized")
-        driver = webdriver.Chrome(options=options)
+
+        driver = webdriver.Chrome()
+        driver.maximize_window()
 
         linkedin_scrap.linkedin_open_scrolldown(driver, user_job_title)
 
         final_df = linkedin_scrap.data_scrap(driver, user_job_title)
         driver.quit()
+
         return final_df
 
 
 streamlit_config()
-st.write('')
+add_vertical_space(1)
 
 
 # sidebar
@@ -274,18 +296,18 @@ if option == 'Summary':
 
     try:
         if pdf is not None and openai_api_key is not None:
-            pdf_chunks = pdf_to_chunks(pdf)
+            pdf_chunks = resume_analyzer.pdf_to_chunks(pdf)
 
-            summary = resume_summary(query_with_chunks=pdf_chunks)
-            result_summary = openai(openai_api_key=openai_api_key, query=summary)
+            summary = resume_analyzer.resume_summary(query_with_chunks=pdf_chunks)
+            result_summary = resume_analyzer.openai(openai_api_key=openai_api_key, chunks=pdf_chunks, analyze=summary)
 
             st.subheader('Summary:')
             st.write(result_summary)
 
-    except:
+    except Exception as e:
         col1, col2 = st.columns(2)
         with col1:
-            st.warning('OpenAI API Key is Invalid')
+            st.warning(e)
 
 
 elif option == 'Strength':
@@ -297,22 +319,22 @@ elif option == 'Strength':
     try:
         if pdf is not None and openai_api_key is not None:
 
-            pdf_chunks = pdf_to_chunks(pdf)
+            pdf_chunks = resume_analyzer.pdf_to_chunks(pdf)
 
             # Resume summary
-            summary = resume_summary(query_with_chunks=pdf_chunks)
-            result_summary = openai(openai_api_key=openai_api_key, query=summary)
+            summary = resume_analyzer.resume_summary(query_with_chunks=pdf_chunks)
+            result_summary = resume_analyzer.openai(openai_api_key=openai_api_key, chunks=pdf_chunks, analyze=summary)
 
-            strength = resume_strength(query_with_chunks=result_summary)
-            result_strength = openai(openai_api_key=openai_api_key, query=strength)
+            strength = resume_analyzer.resume_strength(query_with_chunks=result_summary)
+            result_strength = resume_analyzer.openai(openai_api_key=openai_api_key, chunks=pdf_chunks, analyze=strength)
 
             st.subheader('Strength:')
             st.write(result_strength)
 
-    except:
+    except Exception as e:
         col1, col2 = st.columns(2)
         with col1:
-            st.warning('OpenAI API Key is Invalid')
+            st.warning(e)
 
 
 elif option == 'Weakness':
@@ -324,22 +346,22 @@ elif option == 'Weakness':
     try:
         if pdf is not None and openai_api_key is not None:
 
-            pdf_chunks = pdf_to_chunks(pdf)
+            pdf_chunks = resume_analyzer.pdf_to_chunks(pdf)
 
             # Resume summary
-            summary = resume_summary(query_with_chunks=pdf_chunks)
-            result_summary = openai(openai_api_key=openai_api_key, query=summary)
+            summary = resume_analyzer.resume_summary(query_with_chunks=pdf_chunks)
+            result_summary = resume_analyzer.openai(openai_api_key=openai_api_key, chunks=pdf_chunks, analyze=summary)
 
-            weakness = resume_weakness(query_with_chunks=result_summary)
-            result_weakness = openai(openai_api_key=openai_api_key, query=weakness)
+            weakness = resume_analyzer.resume_weakness(query_with_chunks=result_summary)
+            result_weakness = resume_analyzer.openai(openai_api_key=openai_api_key, chunks=pdf_chunks, analyze=weakness)
 
             st.subheader('Weakness:')
             st.write(result_weakness)
 
-    except:
+    except Exception as e:
         col1, col2 = st.columns(2)
         with col1:
-            st.warning('OpenAI API Key is Invalid')
+            st.warning(e)
 
 
 elif option == 'Job Titles':
@@ -350,31 +372,27 @@ elif option == 'Job Titles':
 
     try:
         if pdf is not None and openai_api_key is not None:
-            pdf_chunks = pdf_to_chunks(pdf)
+            pdf_chunks = resume_analyzer.pdf_to_chunks(pdf)
 
             # Resume summary
-            summary = resume_summary(query_with_chunks=pdf_chunks)
-            result_summary = openai(openai_api_key=openai_api_key, query=summary)
+            summary = resume_analyzer.resume_summary(query_with_chunks=pdf_chunks)
+            result_summary = resume_analyzer.openai(openai_api_key=openai_api_key, chunks=pdf_chunks, analyze=summary)
 
-            job_suggestion = job_title_suggestion(query_with_chunks=result_summary)
-            result_suggestion = openai(openai_api_key=openai_api_key, query=job_suggestion)
+            job_suggestion = resume_analyzer.job_title_suggestion(query_with_chunks=result_summary)
+            result_suggestion = resume_analyzer.openai(openai_api_key=openai_api_key, chunks=pdf_chunks, analyze=job_suggestion)
 
             st.subheader('Suggestion: ')
             st.write(result_suggestion)
 
-    except:
+    except Exception as e:
         col1, col2 = st.columns(2)
         with col1:
-            st.warning('OpenAI API Key is Invalid')
+            st.warning(e)
 
 
 elif option == 'Linkedin Jobs':
 
-    try:
-        st.info("Please ensure that 'chromedriver.exe' is installed and actively running on your system.\
-                 If not, you can watch the project demo video for guidance: [AI-Powered Resume Analyzer and\
-                 LinkedIn Scraper with Selenium - Project Demo Video](https://youtu.be/wFouWeK7NPg)")
-        
+    try:        
         # get user input of job title
         user_input_job_title = st.text_input(label='Enter Job Titles (with comma separated):')
         submit = st.button('Submit')
@@ -413,6 +431,8 @@ elif option == 'Linkedin Jobs':
 elif option == 'Exit':
 
     add_vertical_space(3)
-    st.success('Thank you for your time. Exiting the application')
-    st.balloons()
+    col1, col2, col3 = st.columns([0.3,0.4,0.3])
+    with col2:
+        st.success('Thank you for your time. Exiting the application')
+        st.balloons()
 
