@@ -8,4 +8,4 @@ langchain
 openai
 tiktoken
 faiss-cpu
-selenium
+selenium >=4.0.0, < 5.0.0
