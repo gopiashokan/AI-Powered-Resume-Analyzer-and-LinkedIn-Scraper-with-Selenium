@@ -49,7 +49,7 @@ pip install selenium
 
 To use this project, follow these steps:
 
-1. Clone the repository: ```git clone [https://github.com/gopiashokan/Resume-Analyzer-Artificial-Intelligence.git](https://github.com/gopiashokan/AI-Powered-Resume-Analyzer-and-LinkedIn-Scraper-with-Selenium.git)```
+1. Clone the repository: ```https://github.com/gopiashokan/AI-Powered-Resume-Analyzer-and-LinkedIn-Scraper-with-Selenium.git```
 2. Install the required packages: ```pip install -r requirements.txt```
 3. Run the Streamlit app: ```streamlit run app.py```
 4. Access the app in your browser at ```http://localhost:8501```
