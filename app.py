@@ -12,6 +12,8 @@ from langchain.chat_models import ChatOpenAI
 from langchain.chains.question_answering import load_qa_chain
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.common.exceptions import NoSuchElementException
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -334,7 +336,7 @@ class linkedin_scraper:
             col1,col2,col3 = st.columns([0.5,0.3,0.2], gap='medium')
             with col1:
                 job_title_input = st.text_input(label='Job Title')
-                job_title_input = job_title_input.split()
+                job_title_input = job_title_input.split(',')
             with col2:
                 job_location = st.text_input(label='Job Location', value='India')
             with col3:
@@ -362,17 +364,35 @@ class linkedin_scraper:
         return link
     
 
-    def link_open_scrolldown(driver, link, job_count):
+    def open_link(driver, link):
 
+        while True:
+            # Break the Loop if the Element is Found, Indicating the Page Loaded Correctly
+            try:
+                driver.get(link)
+                driver.implicitly_wait(5)
+                time.sleep(3)
+                driver.find_element(by=By.CSS_SELECTOR, value='span.switcher-tabs__placeholder-text.m-auto')
+                return
+            
+            # Retry Loading the Page
+            except NoSuchElementException:
+                continue
+
+
+    def link_open_scrolldown(driver, link, job_count):
+        
         # Open the Link in LinkedIn
-        driver.get(link)
-        driver.implicitly_wait(10)
+        linkedin_scraper.open_link(driver, link)
 
         # Scroll Down the Page
         for i in range(0,job_count):
+            # Simulate clicking the Page Up button
+            body = driver.find_element(by=By.TAG_NAME, value='body')
+            body.send_keys(Keys.PAGE_UP)
+            # Scoll down the Page to End
             driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-            driver.implicitly_wait(5)
-
+            driver.implicitly_wait(2)
             # Click on See More Jobs Button if Present
             try:
                 x = driver.find_element(by=By.CSS_SELECTOR, value="button[aria-label='See more jobs']").click()
@@ -383,23 +403,23 @@ class linkedin_scraper:
 
     def job_title_filter(scrap_job_title, user_job_title_input):
         
-        # User Job Title Convert Lower Case and Split into List
-        user_input = []
-        for i in [i.lower() for i in user_job_title_input]:
-            user_input.extend(i.split())
+        # User Job Title Convert into Lower Case
+        user_input = [i.lower().strip() for i in user_job_title_input]
 
-        # scraped Job Title Convert Lower Case and Split into List
-        scrap_title = [i.lower() for i in scrap_job_title.split()]
+        # scraped Job Title Convert into Lower Case
+        scrap_title = [i.lower().strip() for i in [scrap_job_title]]
 
-        # Identify Same Words in Both Lists
-        matched_words = list(set(user_input).intersection(set(scrap_title)))
+        # Verify Any User Job Title in the scraped Job Title
+        confirmation_count = 0
+        for i in user_input:
+            if all(j in scrap_title[0] for j in i.split()):
+                confirmation_count += 1
 
-        # Return Job Title if there are more than 1 matched word else return NaN
-        if len(user_input) > 1:
-            return scrap_job_title if len(matched_words) > 1 else np.nan
-        
+        # Return Job Title if confirmation_count greater than 0 else return NaN
+        if confirmation_count > 0:
+            return scrap_job_title
         else:
-            return scrap_job_title if len(matched_words) == 1 else np.nan
+            return np.nan
 
 
     def scrap_company_data(driver, job_title_input, job_location):
@@ -428,7 +448,7 @@ class linkedin_scraper:
 
         # Return Location if User Job Location in Scraped Location else return NaN
         df['Location'] = df['Location'].apply(lambda x: x if job_location.lower() in x.lower() else np.nan)
-
+        
         # Drop Null Values and Reset Index
         df = df.dropna()
         df.reset_index(drop=True, inplace=True)
@@ -445,10 +465,8 @@ class linkedin_scraper:
         job_description, description_count = [], 0
         for i in range(0, len(website_url)):
             try:
-                # Open the URL
-                driver.get(website_url[i])
-                driver.implicitly_wait(5)
-                time.sleep(1)
+                # Open the Link in LinkedIn
+                linkedin_scraper.open_link(driver, website_url[i])
 
                 # Click on Show More Button
                 driver.find_element(by=By.CSS_SELECTOR, value='button[data-tracking-control-name="public_jobs_show-more-html-btn"]').click()
@@ -488,17 +506,22 @@ class linkedin_scraper:
 
         # Display the Data in User Interface
         add_vertical_space(1)
-        for i in range(0, len(df_final)):
-            
-            st.markdown(f'<h3 style="color: orange;">Job Posting Details : {i+1}</h3>', unsafe_allow_html=True)
-            st.write(f"Company Name : {df_final.iloc[i,0]}")
-            st.write(f"Job Title    : {df_final.iloc[i,1]}")
-            st.write(f"Location     : {df_final.iloc[i,2]}")
-            st.write(f"Website URL  : {df_final.iloc[i,3]}")
+        if len(df_final) > 0:
+            for i in range(0, len(df_final)):
+                
+                st.markdown(f'<h3 style="color: orange;">Job Posting Details : {i+1}</h3>', unsafe_allow_html=True)
+                st.write(f"Company Name : {df_final.iloc[i,0]}")
+                st.write(f"Job Title    : {df_final.iloc[i,1]}")
+                st.write(f"Location     : {df_final.iloc[i,2]}")
+                st.write(f"Website URL  : {df_final.iloc[i,3]}")
 
-            with st.expander(label='Job Desription'):
-                st.write(df_final.iloc[i, 4])
-            add_vertical_space(3)
+                with st.expander(label='Job Desription'):
+                    st.write(df_final.iloc[i, 4])
+                add_vertical_space(3)
+        
+        else:
+            st.markdown(f'<h5 style="text-align: center;color: orange;">No Matching Jobs Found</h5>', 
+                                unsafe_allow_html=True)
 
 
     def main():
@@ -563,7 +586,7 @@ add_vertical_space(5)
 
 with st.sidebar:
 
-    add_vertical_space(3)
+    add_vertical_space(4)
 
     option = option_menu(menu_title='', options=['Summary', 'Strength', 'Weakness', 'Job Titles', 'Linkedin Jobs'],
                          icons=['house-fill', 'database-fill', 'pass-fill', 'list-ul', 'linkedin'])
