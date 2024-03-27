@@ -21,10 +21,12 @@ Resume Analyzer AI" leverages the power of LLM and OpenAI as an advanced Streaml
 - Numpy
 - Pandas
 - Streamlit
-- LLM
 - LangChain
+- LLM
 - OpenAI
 - Selenium
+- HuggingFace
+- AWS
 
 
 **Installation**
