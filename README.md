@@ -4,6 +4,7 @@
 
 Resume Analyzer AI" leverages the power of LLM and OpenAI as an advanced Streamlit application, specializing in thorough resume analysis. It excels at summarizing the resume, evaluating strengths, identifying weaknesses, and offering personalized improvement suggestions, while also recommending the perfect job titles. Additionally, it seamlessly employs Selenium to extract vital LinkedIn data, encompassing company names, job titles, locations, job URLs, and detailed job descriptions. In essence, Resume Analyzer AI simplifies the job-seeking journey by equipping users with comprehensive insights to elevate their career opportunities.
 
+<br />
 
 **Table of Contents**
 
@@ -15,19 +16,21 @@ Resume Analyzer AI" leverages the power of LLM and OpenAI as an advanced Streaml
 6. License
 7. Contact
 
+<br />
 
 **Key Technologies and Skills**
 - Python
-- Numpy
-- Pandas
-- Streamlit
 - LangChain
 - LLM
 - OpenAI
 - Selenium
+- NumPy
+- Pandas
+- Streamlit
 - HuggingFace
 - AWS
 
+<br />
 
 **Installation**
 
@@ -47,6 +50,8 @@ pip install faiss-cpu
 pip install selenium
 ```
 
+<br />
+
 **Usage**
 
 To use this project, follow these steps:
@@ -56,6 +61,7 @@ To use this project, follow these steps:
 3. Run the Streamlit app: ```streamlit run app.py```
 4. Access the app in your browser at ```http://localhost:8501```
 
+<br />
 
 **Features**
 
@@ -85,23 +91,33 @@ To use this project, follow these steps:
 - **Weakness:** AI conducts thorough analysis to pinpoint weaknesses and offers tailored solutions for transforming them into strengths, empowering job seekers.
 - **Suggestion:** AI provides personalized job title recommendations that align closely with the user's qualifications and resume content, facilitating an optimized job search experience.
 
-**Streamlit application:** [https://huggingface.co/spaces/gopiashokan/Resume-Analyzer-AI](https://huggingface.co/spaces/gopiashokan/Resume-Analyzer-AI)
+<br />
+
+🚀 **Streamlit application:** [https://huggingface.co/spaces/gopiashokan/Resume-Analyzer-AI](https://huggingface.co/spaces/gopiashokan/Resume-Analyzer-AI)
+
+<br />
 
 **Selenium-Powered LinkedIn Data Scraping:**
 - Utilizing Selenium and a Webdriver automated test tool, this feature enables users to input job titles, automating the data scraping process from LinkedIn. The scraped data includes crucial details such as company names, job titles, locations, URLs, and comprehensive job descriptions.
 - This streamlined process enables users to easily review scraped job details and apply for positions, simplifying their job search and application experience.
 
-**Project Demo Video:** [https://youtu.be/wFouWeK7NPg](https://youtu.be/wFouWeK7NPg)
+<br />
+
+🎥 **Project Demo Video:** [https://youtu.be/wFouWeK7NPg](https://youtu.be/wFouWeK7NPg)
+
+<br />
 
 **Contributing**
 
 Contributions to this project are welcome! If you encounter any issues or have suggestions for improvements, please feel free to submit a pull request.
 
+<br />
 
 **License**
 
 This project is licensed under the MIT License. Please review the LICENSE file for more details.
 
+<br />
 
 **Contact**
 
