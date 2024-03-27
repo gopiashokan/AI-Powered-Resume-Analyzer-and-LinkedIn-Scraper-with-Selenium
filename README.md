@@ -20,12 +20,12 @@ Resume Analyzer AI" leverages the power of LLM and OpenAI as an advanced Streaml
 
 **Key Technologies and Skills**
 - Python
+- NumPy
+- Pandas
 - LangChain
 - LLM
 - OpenAI
 - Selenium
-- NumPy
-- Pandas
 - Streamlit
 - HuggingFace
 - AWS
