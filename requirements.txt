@@ -4,7 +4,7 @@ streamlit
 streamlit_option_menu
 streamlit_extras
 PyPDF2
-langchain
+langchain==0.0.302
 openai
 tiktoken
 faiss-cpu

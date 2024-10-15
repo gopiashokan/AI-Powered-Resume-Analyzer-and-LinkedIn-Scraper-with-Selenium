@@ -37,7 +37,7 @@ def streamlit_config():
     st.markdown(page_background_color, unsafe_allow_html=True)
 
     # title and position
-    st.markdown(f'<h1 style="text-align: center;">AI-Powered Resume Analyzer and <br> LinkedIn Scraper with Selenium</h1>',
+    st.markdown(f'<h1 style="text-align: center;">Resume Analyzer AI</h1>',
                 unsafe_allow_html=True)
 
 
@@ -387,12 +387,22 @@ class linkedin_scraper:
 
         # Scroll Down the Page
         for i in range(0,job_count):
+
             # Simulate clicking the Page Up button
             body = driver.find_element(by=By.TAG_NAME, value='body')
             body.send_keys(Keys.PAGE_UP)
+
+            # Locate the sign-in modal dialog 
+            try:
+                driver.find_element(by=By.CSS_SELECTOR, 
+                                value="button[data-tracking-control-name='public_jobs_contextual-sign-in-modal_modal_dismiss']>icon>svg").click()
+            except:
+                pass
+
             # Scoll down the Page to End
             driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
             driver.implicitly_wait(2)
+
             # Click on See More Jobs Button if Present
             try:
                 x = driver.find_element(by=By.CSS_SELECTOR, value="button[aria-label='See more jobs']").click()
@@ -462,7 +472,9 @@ class linkedin_scraper:
         website_url = df['Website URL'].tolist()
         
         # Scrap the Job Description
-        job_description, description_count = [], 0
+        job_description = []
+        description_count = 0
+
         for i in range(0, len(website_url)):
             try:
                 # Open the Link in LinkedIn
@@ -476,18 +488,19 @@ class linkedin_scraper:
                 # Get Job Description
                 description = driver.find_elements(by=By.CSS_SELECTOR, value='div[class="show-more-less-html__markup relative overflow-hidden"]')
                 data = [i.text for i in description][0]
-
-                if len(data.strip()) > 0:
+                
+                # Check Description length and Duplicate
+                if len(data.strip()) > 0 and data not in job_description:
                     job_description.append(data)
                     description_count += 1
                 else:
                     job_description.append('Description Not Available')
             
-            # If URL cannot Loading Properly 
+            # If any unexpected issue 
             except:
                 job_description.append('Description Not Available')
             
-            # Check Description Count Meets User Job Count
+            # Check Description Count reach User Job Count
             if description_count == job_count:
                 break
 
@@ -580,7 +593,7 @@ class linkedin_scraper:
 
 # Streamlit Configuration Setup
 streamlit_config()
-add_vertical_space(5)
+add_vertical_space(2)
 
 
 
