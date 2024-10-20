@@ -1,8 +1,8 @@
-# AI-Powered Resume Analyzer and LinkedIn Scraper with Selenium
+# AI Resume Analyzer and LinkedIn Scraper using LLM
 
 **Introduction**
 
-Resume Analyzer AI" leverages the power of LLM and OpenAI as an advanced Streamlit application, specializing in thorough resume analysis. It excels at summarizing the resume, evaluating strengths, identifying weaknesses, and offering personalized improvement suggestions, while also recommending the perfect job titles. Additionally, it seamlessly employs Selenium to extract vital LinkedIn data, encompassing company names, job titles, locations, job URLs, and detailed job descriptions. In essence, Resume Analyzer AI simplifies the job-seeking journey by equipping users with comprehensive insights to elevate their career opportunities.
+Developed an advanced AI application that utilizes LLM and OpenAI for comprehensive resume analysis. It excels at summarizing the resume, evaluating strengths, identifying weaknesses, and offering personalized improvement suggestions, while also recommending the perfect job titles. Additionally, it seamlessly employs Selenium to extract vital LinkedIn data, encompassing company names, job titles, locations, job URLs, and detailed job descriptions. This application simplifies the job-seeking journey by equipping users with comprehensive insights to elevate their career opportunities.
 
 <br />
 
