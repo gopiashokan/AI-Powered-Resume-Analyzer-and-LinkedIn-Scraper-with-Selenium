@@ -1,4 +1,4 @@
-# AI Resume Analyzer and LinkedIn Scraper using LLM
+# AI Resume Analyzer and LinkedIn Scraper using Generative AI
 
 **Introduction**
 
